@@ -1,5 +1,6 @@
 const Jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const _ = require("lodash");
 
 class Response {
   constructor(data, success = true) {
@@ -20,15 +21,15 @@ const isLoggedIn = async (req, res, next) => {
     if (!token) throw { message: "Token is not found", code: 401 };
     const data = decodeToken(token);
     // Check for userid
-    if (!data.userid) throw { message: "User is not authorized", code: 401 };
+    if (!data.userid) throw { message: "User is not authorized!", code: 401 };
     const user = await User.findById(data.userid);
     // Check if user token matched the db's token
     if (user.token !== token)
-      throw { message: "User is not authorized", code: 401 };
-    req.userToken = data;
+      throw { message: "User is not authorized!", code: 401 };
+    req.user = data;
     next();
   } catch (error) {
-    console.log(error, "error occured when logging out");
+    console.log("error occured when logging in", error);
     res
       .status(error.code ? error.code : 401)
       .json(
@@ -43,6 +44,7 @@ const isLoggedIn = async (req, res, next) => {
 const logOut = async (req, res, next) => {
   try {
     const bearerToken = req.get("Authorization");
+    console.log("🚀 ~ file: util.js:50 ~ logOut ~ bearerToken", bearerToken)
     const token = bearerToken?.split(" ")[1];
     if (!token) throw { message: "Token is not found", code: 401 };
     const data = decodeToken(token);
