@@ -40,7 +40,7 @@ io.on("connection", socket => {
   console.log(`user ${socket.id} connected!`);
   socket.on("message", (message, userid) => {
     console.log(message, userid);
-    // socket.broadcast.emit("new-message", message)
+    socket.broadcast.emit("new-message", message)
   })
   
   socket.on("public-server", (id) => {
