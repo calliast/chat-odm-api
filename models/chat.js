@@ -7,7 +7,7 @@ const chatSchema = new Schema({
         unique: true,
         default: crypto.randomUUID()
     },
-    users: [{type: Schema.Types.ObjectId, ref: "User"}],
+    participants: [{type: Schema.Types.ObjectId, ref: "User"}],
     message: [{
         type: Schema.Types.ObjectId, ref: "Message"
     }]

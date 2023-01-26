@@ -55,3 +55,4 @@ router.post("/validate", isLoggedIn, async function (req, res) {
   }
 });
 
+module.exports = router
