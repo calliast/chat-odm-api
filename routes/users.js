@@ -37,7 +37,7 @@ router
   .route("/:id")
   .post(async function (req, res) {
     try {
-      const user = await User.findOne({ _id: req.params.id }, req.body.query)
+      const user = await User.findOne({ username: req.params.id}, req.body.query)
       res.status(201).json(new Response(user));
     } catch (error) {
       console.log(error, "error when updating a user");

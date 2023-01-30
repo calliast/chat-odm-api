@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-// const Todo = require("./todo");
 var bcrypt = require("bcrypt");
 const saltRounds = 10;
 
@@ -17,7 +16,7 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
-  friends: [{ type: Schema.Types.ObjectId, ref: "User" }],
+  contacts: [{ type: Schema.Types.ObjectId, ref: "User" }],
   chat: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
 });
 
