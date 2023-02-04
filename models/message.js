@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const Chat = require("./chat")
+const Chat = require("./chat");
 const messageSchema = new Schema(
   {
     message: {
@@ -16,14 +16,25 @@ const messageSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    deleteStatus: {
+      type: Boolean,
+      default: false,
+    },
+    receivedStatus: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// messageSchema.pre("findOneAndDelete", function (next) {
-//   Chat.deleteMany({ executor: this._conditions._id }).exec();
+// messageSchema.pre("save", async function (next, reqId) {
+//   const Message = this
+//   this.reqId = reqId
+//   console.log("🚀 ~ file: message.js:34 ~ req", req)
+  
 //   next();
 // });
 

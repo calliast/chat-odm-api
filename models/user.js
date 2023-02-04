@@ -17,7 +17,7 @@ const userSchema = new Schema({
     default: null,
   },
   contacts: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  chat: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
+  chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
 });
 
 // userSchema.pre("save", async function (next) {

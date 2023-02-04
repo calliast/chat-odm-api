@@ -26,6 +26,7 @@ router.route("/auth/signin").post(async function (req, res) {
     await user.save();
     res.status(201).json(
       new Response({
+        _id: user._id,
         username: user.username,
         name: user.name,
         token: user.token,

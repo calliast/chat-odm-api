@@ -4,15 +4,6 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 
-/**
- * Example of socket.io config with dedicated IP
- */
-// var io = require("socket.io")(3136, {
-//   cors: {
-//     origin: ["http://localhost:3000"],
-//   },
-// });
-
 const mongoose = require("mongoose");
 
 main().catch((err) => console.log(err));
@@ -34,47 +25,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/api", apiRouter);
 app.use("/chat", chatRouter)
-
-/**
- * Start declaring chat pipeline
- */
-
-// io.on("connection", (socket) => {
-//   console.log(`user ${socket.id} connected!`);
-//   socket.on("join-room", (room) => {
-//     socket.join(room);
-//     console.log(`User ${socket.id} has joined room ${room}`);
-//     console.log(io.sockets.adapter.rooms, "cek");
-//   });
-
-//   socket.on("send-chat", (payload) => {
-//     console.log(payload.message, payload.sentBy, payload.roomID);
-//     if (payload.roomID.split("$_&_$").length === 1) {
-//       socket.join(`${payload.sentBy}$_&_$${payload.roomID}`);
-//       return socket.to(payload.roomID).emit(`receive-chat`, payload);
-//     }
-//     socket.to(payload.roomID).emit(`receive-chat`, payload);
-//   });
-
-//   socket.on("connect_error", (err) => {
-//     console.log(`connect_error due to ${err.message}`);
-//   });
-
-//   socket.on("disconnect", (message) => {
-//     console.log(message);
-//   });
-// });
 
 var debug = require("debug")("odm-chat-api:server");
 var http = require("http");
@@ -110,7 +65,7 @@ var io = new Server(server, {
 io.on("connection", (socket) => {
   const username = socket.handshake.query.username;
   const time = socket.handshake.query.timestamp;
-  console.log("🚀 ~ file: app.js:113 ~ io.on ~ time", time)
+  // console.log("🚀 ~ file: app.js:113 ~ io.on ~ time", time)
   socket.join(username);
   console.log(
     `user ${socket.id} is connected! and has joined room ${username}`
@@ -119,10 +74,20 @@ io.on("connection", (socket) => {
   
   socket.on("send-chat", (payload) => {
     console.log({ roomStatus: io.sockets.adapter.rooms });
-    console.log(payload.message, payload.sentID);
+    console.log("event send-chat",payload);
 
     socket.broadcast.to(payload.receiverID).emit(`receive-chat`, payload);
   });
+
+  socket.on("send-delete-notice", (payload) => {
+    console.log("event send-delete-chat",payload);
+    socket.broadcast.to(payload.receiverID).emit("receive-delete-notice", payload)
+  })
+
+  socket.on("send-read-notice", (payload) => {
+    console.log("event send-read-notice",payload);
+    socket.broadcast.to(payload.receiverID).emit("receive-read-notice", payload)
+  })
 
   socket.on("leave-room", (room) => {
     socket.leave(room);
