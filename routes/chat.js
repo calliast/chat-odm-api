@@ -72,11 +72,12 @@ router
   }) //. route to update read status
   .put(async function (req, res) {
     const { messageIDs } = req.body;
+    console.log("🚀 ~ file: chat.js:75 ~ messageIDs", messageIDs)
     let updateMessageIDs;
     try {
       updateMessageIDs = messageIDs.map((item) => {
         return Message.findOneAndUpdate(
-          { _id: item._id },
+          { _id: item },
           {
             $set: { readStatus: true },
           },
@@ -84,8 +85,8 @@ router
         );
       });
 
-      console.log("🚀 ~ file: chat.js:89 ~ updateMessageIDs", updateMessageIDs)
       updateMessageIDs = await Promise.all(updateMessageIDs);
+      console.log("🚀 ~ file: chat.js:89 ~ updateMessageIDs", updateMessageIDs)
 
       res.status(200).json(new Response(updateMessageIDs));
     } catch (error) {
@@ -93,18 +94,22 @@ router
       res.status(500).json(new Response(error, false));
     }
   })
+
+  router
+  .route("/message/:_id")
   //. route to delete message
   .delete(async function (req, res) {
     try {
       await Message.findOneAndUpdate(
-        { _id: req.body._id },
+        { _id: req.params._id },
         {
           $set: { deleteStatus: true, message: "_This message was deleted._" },
         },
         { new: true }
-      );
-
-      res.status(200).json(new Response({ _id: req.body._id }));
+        );
+        
+        console.log("🚀 ~ file: chat.js:102 ~ req.params._id", req.params)
+      res.status(200).json(new Response({ _id: req.params._id }));
     } catch (error) {
       console.log("Error waktu delete message", error);
       res.status(500).json(new Response(error, false));

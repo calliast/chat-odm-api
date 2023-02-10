@@ -54,7 +54,7 @@ var server = http.createServer(app);
 var { Server } = require("socket.io");
 var io = new Server(server, {
   cors: {
-    origin: ["http://192.168.1.7:3000", "http://localhost:3000", "http://192.168.1.108:3000"]
+    origin: ["http://192.168.1.7:3000", "http://localhost:3000", "http://192.168.1.108:3000", "http://192.168.1.30:3000"]
   }
 });
 
@@ -65,7 +65,6 @@ var io = new Server(server, {
 io.on("connection", (socket) => {
   const username = socket.handshake.query.username;
   const time = socket.handshake.query.timestamp;
-  // console.log("🚀 ~ file: app.js:113 ~ io.on ~ time", time)
   socket.join(username);
   console.log(
     `user ${socket.id} is connected! and has joined room ${username}`
