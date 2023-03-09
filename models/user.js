@@ -16,22 +16,8 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
-  contacts: [{ type: Schema.Types.ObjectId, ref: "User" }],
-  chats: [{ type: Schema.Types.ObjectId, ref: "Chat" }],
+  chats: [{ type: Schema.Types.ObjectId, ref: "Message" }],
 });
-
-// userSchema.pre("save", async function (next) {
-//   var user = this;
-//   try {
-//     // only hash the username if it has been modified
-//     if (!user.isModified("username")) return next();
-//     // generate a salt
-//     user.username = await bcrypt.hash(user.username, saltRounds);
-//     next();
-//   } catch (error) {
-//     console.log("Error occured when saving the username", error);
-//   }
-// });
 
 userSchema.methods.generateHash = async function (password) {
   try {
@@ -52,10 +38,5 @@ userSchema.methods.validUser = async function (username) {
     console.log(error, "validUser error");
   }
 };
-
-// userSchema.pre("findOneAndDelete", function (next) {
-//   Todo.deleteMany({ executor: this._conditions._id }).exec();
-//   next();
-// });
 
 module.exports = model("User", userSchema);

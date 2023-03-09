@@ -12,16 +12,19 @@ const {
 router.route("/auth/signin").post(async function (req, res) {
   try {
     const { username } = req.body;
-    const user = await User.findOne({ username });
+    let isNew = null
+    let user = await User.findOne({ username });
     // check if username exist
-    if (!user)
-      //|| !(await user.validUser(username)))
-      throw { message: "username doesn't exist", code: 401 };
+    if (!user) {
+      user = await User.create({ username, name: username });
+      isNew = true
+    }
+    // throw { message: "username doesn't exist", code: 401 };
     // generate token
     user.token = generateToken({
       userid: user._id,
       name: user.name,
-      exp: Math.floor(Date.now() / 1000) + 60 * 5,
+      // exp: Math.floor(Date.now() / 1000) + 60 * 30, // set for 30 minutes expiration time
     });
     await user.save();
     res.status(201).json(
@@ -30,6 +33,7 @@ router.route("/auth/signin").post(async function (req, res) {
         username: user.username,
         name: user.name,
         token: user.token,
+        isNew
       })
     );
   } catch (error) {
@@ -56,4 +60,4 @@ router.post("/validate", isLoggedIn, async function (req, res) {
   }
 });
 
-module.exports = router
+module.exports = router;

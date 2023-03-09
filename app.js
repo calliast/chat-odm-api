@@ -54,7 +54,7 @@ var server = http.createServer(app);
 var { Server } = require("socket.io");
 var io = new Server(server, {
   cors: {
-    origin: ["http://192.168.1.7:3000", "http://localhost:3000", "http://192.168.1.108:3000", "http://192.168.1.30:3000"]
+    origin: ["http://192.168.1.5:3000", "http://localhost:3000", "http://192.168.1.108:3000", "http://192.168.1.37:3000", "http://192.168.1.19:3000"]
   }
 });
 
@@ -88,10 +88,10 @@ io.on("connection", (socket) => {
     socket.broadcast.to(payload.receiverID).emit("receive-read-notice", payload)
   })
 
-  socket.on("leave-room", (room) => {
-    socket.leave(room);
-    console.log(`User ${socket.id} has leave room ${room}`);
-  });
+  socket.on("send-notice-new-account", (payload) => {
+    console.log("event send-notice-new-account", payload)
+    socket.broadcast.emit("receive-notice-new-account", payload)
+  })
 
   socket.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);

@@ -1,6 +1,5 @@
 const Jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const _ = require("lodash");
 
 class Response {
   constructor(data, success = true) {
@@ -16,6 +15,7 @@ const decodeToken = (token) => Jwt.verify(token, tokenKey);
 const isLoggedIn = async (req, res, next) => {
   try {
     const bearerToken = req.get("Authorization");
+    console.log("🚀 ~ file: util.js:18 ~ isLoggedIn ~ bearerToken", bearerToken)
     const token = bearerToken?.split(" ")[1];
     // Check for token availability
     if (!token) throw { message: "Token is not found", code: 401 };
@@ -29,7 +29,7 @@ const isLoggedIn = async (req, res, next) => {
     req.user = data;
     next();
   } catch (error) {
-    console.log("error occured when logging in", error);
+    console.log("User is not authorized - isLoggedIn", error);
     res
       .status(error.code ? error.code : 401)
       .json(
@@ -44,7 +44,7 @@ const isLoggedIn = async (req, res, next) => {
 const logOut = async (req, res, next) => {
   try {
     const bearerToken = req.get("Authorization");
-    console.log("🚀 ~ file: util.js:50 ~ logOut ~ bearerToken", bearerToken)
+    console.log("🚀 ~ token when logging out", bearerToken);
     const token = bearerToken?.split(" ")[1];
     if (!token) throw { message: "Token is not found", code: 401 };
     const data = decodeToken(token);
