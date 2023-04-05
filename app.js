@@ -54,7 +54,7 @@ var server = http.createServer(app);
 var { Server } = require("socket.io");
 var io = new Server(server, {
   cors: {
-    origin: ["http://192.168.1.5:3000", "http://localhost:3000", "http://192.168.1.108:3000", "http://192.168.1.37:3000", "http://192.168.1.19:3000"]
+    origin: ["http://192.168.1.40:3000", "http://localhost:3000", "http://192.168.8.108:3000", "http://192.168.1.7:3000", "http://192.168.1.19:3000", "http://169.254.245.187:3000"]
   }
 });
 

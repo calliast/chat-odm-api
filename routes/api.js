@@ -12,13 +12,15 @@ const {
 router.route("/auth/signin").post(async function (req, res) {
   try {
     const { username } = req.body;
-    let isNew = null
+    let isNew = null;
     let user = await User.findOne({ username });
     // check if username exist
     if (!user) {
       user = await User.create({ username, name: username });
-      isNew = true
+      isNew = true;
     }
+
+    if (user.token) throw { message: "multiple users detected", code: 401 };
     // throw { message: "username doesn't exist", code: 401 };
     // generate token
     user.token = generateToken({
@@ -33,7 +35,7 @@ router.route("/auth/signin").post(async function (req, res) {
         username: user.username,
         name: user.name,
         token: user.token,
-        isNew
+        isNew,
       })
     );
   } catch (error) {
