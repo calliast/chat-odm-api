@@ -15,7 +15,7 @@ async function main() {
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var apiRouter = require("./routes/api");
-var chatRouter = require("./routes/chat")
+var chatRouter = require("./routes/chat");
 
 var app = express();
 
@@ -29,7 +29,7 @@ app.use(cors());
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/api", apiRouter);
-app.use("/chat", chatRouter)
+app.use("/chat", chatRouter);
 
 var debug = require("debug")("odm-chat-api:server");
 var http = require("http");
@@ -54,8 +54,10 @@ var server = http.createServer(app);
 var { Server } = require("socket.io");
 var io = new Server(server, {
   cors: {
-    origin: ["http://192.168.1.40:3000", "http://localhost:3000", "http://192.168.8.108:3000", "http://192.168.1.7:3000", "http://192.168.1.19:3000", "http://169.254.245.187:3000"]
-  }
+    origin: [
+      "http://192.168.8.108:3000",
+    ],
+  },
 });
 
 /**
@@ -70,28 +72,32 @@ io.on("connection", (socket) => {
     `user ${socket.id} is connected! and has joined room ${username}`
   );
   console.log({ roomStatus: io.sockets.adapter.rooms });
-  
+
   socket.on("send-chat", (payload) => {
     console.log({ roomStatus: io.sockets.adapter.rooms });
-    console.log("event send-chat",payload);
+    console.log("event send-chat", payload);
 
     socket.broadcast.to(payload.receiverID).emit(`receive-chat`, payload);
   });
 
   socket.on("send-delete-notice", (payload) => {
-    console.log("event send-delete-chat",payload);
-    socket.broadcast.to(payload.receiverID).emit("receive-delete-notice", payload)
-  })
+    console.log("event send-delete-chat", payload);
+    socket.broadcast
+      .to(payload.receiverID)
+      .emit("receive-delete-notice", payload);
+  });
 
   socket.on("send-read-notice", (payload) => {
-    console.log("event send-read-notice",payload);
-    socket.broadcast.to(payload.receiverID).emit("receive-read-notice", payload)
-  })
+    console.log("event send-read-notice", payload);
+    socket.broadcast
+      .to(payload.receiverID)
+      .emit("receive-read-notice", payload);
+  });
 
   socket.on("send-notice-new-account", (payload) => {
-    console.log("event send-notice-new-account", payload)
-    socket.broadcast.emit("receive-notice-new-account", payload)
-  })
+    console.log("event send-notice-new-account", payload);
+    socket.broadcast.emit("receive-notice-new-account", payload);
+  });
 
   socket.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
